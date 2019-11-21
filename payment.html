@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Add meta tags for mobile and IE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- Reemplazar TITLE por el nombre de la tienda -->
+  <title>TITLE</title>
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+
+<body>
+  <br><br>
+  <h2 style="text-align: center">Concepto: <span id="idItem"></span></h2>
+  <h2 style="text-align: center">Precio: <span id="amt"></span> <span id="curr"></span></h2>
+  <br><br>
+    
+  <!-- Include the PayPal JavaScript SDK -->
+  <script>
+    function getQueryVariable(variable){
+      var query = window.location.search.substring(1);
+      var dec = atob(query);
+      var vars = dec.split("&");
+      for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair[0] == variable){return pair[1];}
+      }
+        return(false);
+    }
+
+    var z=getQueryVariable("id");
+    document.getElementById("idItem").innerHTML = z;
+
+    var x=getQueryVariable("amount");
+    document.getElementById("amt").innerHTML = x;
+
+    var a= getQueryVariable("currency");
+    document.getElementById("curr").innerHTML = a;
+
+    /*
+
+    El valor "CLIENT-ID" debe ser reemplazado por el Client ID obtenido en https://developer.paypal.com/
+    Ejemplo: var y= 'https://www.paypal.com/sdk/js?currency=' + a +'&client-id=AZn7bgb2Vl-FTltBEz7o8vahxJC1Pmfc1pjjFzR0nvoJWTr1cXc07rlXIJNx_T844sPfyuXjA0Bxi3rD';
+
+    */
+
+    var y= 'https://www.paypal.com/sdk/js?currency=' + a +'&client-id=CLIENT-ID';
+        
+    var script = document.createElement( 'script' );
+    script.src = y;
+    document.getElementsByTagName('head')[0].appendChild(script);
+        
+    script.onload = function() {
+      // Render the PayPal button into #paypal-button-container
+      paypal.Buttons({
+        // Set up the transaction
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              description: getQueryVariable("id"),
+              amount: {
+                value: getQueryVariable("amount")
+              }
+            }]
+          });
+        },
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            // Show a success message to the buyer
+            alert('Transaction completed by ' + details.payer.name.given_name + '!');
+          });
+        }
+      }).render('#paypal-button-container');
+    }; 
+  </script>
+
+  <div style="text-align: center" id="paypal-button-container"></div>
+</body>
+</html>
+
+
+    

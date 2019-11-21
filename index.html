@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Generador de Pagos</title>
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+
+<body id="debug">
+  <div class="container">
+    <h1 class="page-header">Generador de Pagos</h1>
+    <div class="row">
+      <form role="form" class="form-horizontal" name="adjustConfiguration">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="cfgitem-itemName" class="col-sm-3 control-label">Base URL</label>
+              <div class="col-sm-7">
+              <!-- 
+                El valor "URL-ARCHIVO-PAYMENT" debe ser reemplazado por la url del archivo payment.html
+                Ejemplo: <input  disabled class="form-control" id="cfgitem-base" name="base" display="block" value="http://localhost/spb-link-gen-dynamic-master/payment.html">
+               -->
+              <input  disabled class="form-control" id="cfgitem-base" name="base" display="block" value="URL-ARCHIVO-PAYMENT">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cfgitem-itemSku" class="col-sm-3 control-label">Concepto</label>
+            <div class="col-sm-7">
+              <input type="text" class="form-control" id="cfgitem-idItem" name="idItem" value="" placeholder="Ejemplo: Viaje 2 personas" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cfgitem-itemDescription" class="col-sm-3 control-label">Precio</label>
+            <div class="col-sm-5"> 
+              <input type="number" class="form-control" id="cfgitem-amount" name="amount" value="" placeholder="Ejemplo: 1500.00" required>
+            </div>
+            <div class="col-sm-2"> 
+              <select class="form-control" id="currency" name="currency">
+                <option value="MXN" selected="">MXN</option>
+                <option value="USD" >USD</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group pull-right">
+            <button class="btn btn-primary" onclick="generateUrl();return false;" >Generar URL</button>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-primary" onclick="window.location.reload();" style="color: white">Limpiar formulario</button>
+          </div>
+        </div> 
+      </form>
+      <br>
+      <br>
+      <h2>URL para compartir:</h2> <h3><span id="finalUrl"></span></h3>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+  <script> 
+    function generateUrl() { 
+      var base = document.getElementById("cfgitem-base").value;
+      var tail = "";
+      var amount = document.getElementById("cfgitem-amount").value; 
+      var idItem = document.getElementById("cfgitem-idItem").value;
+      var currency = document.getElementById("currency").value;  
+  
+      // Joining the strings together 
+      var encTail = btoa(tail.concat('amount=',amount,'&id=', idItem, '&currency=', currency)); 
+      var finalUrl = base.concat('?',encTail);
+
+      document.getElementById("finalUrl").innerHTML = finalUrl;
+      console.log('Final url= ' + finalUrl);   
+    } 
+  </script> 
+
+</body>
+</html>
